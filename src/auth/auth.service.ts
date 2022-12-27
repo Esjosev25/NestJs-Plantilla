@@ -36,6 +36,7 @@ export class AuthService {
         token: this.getJwtToken({ id: user.id }),
       };
     } catch (error) {
+      console.log(error);
       this.handleDBErrors(error);
     }
   }
@@ -74,7 +75,10 @@ export class AuthService {
     return token;
   }
   private handleDBErrors(error: any): never {
-    if ((error.code = '23505')) throw new BadRequestException(error.detail);
+    if ((error.code = '11000'))
+      throw new BadRequestException(
+        `Email already registered ${error.keyValue.email}`,
+      );
 
     console.log(error);
     throw new InternalServerErrorException('Please check server logs');

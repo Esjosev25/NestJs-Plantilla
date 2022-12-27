@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ValidRoles } from '../interfaces';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 @Schema()
 export class User extends Document {
@@ -10,10 +10,7 @@ export class User extends Document {
     description: 'User ID',
     uniqueItems: true,
   })
-  @Prop({
-    unique: true,
-    index: true,
-  })
+  @Prop({ type: 'string', index: true })
   id: string;
 
   @ApiProperty({
@@ -23,6 +20,7 @@ export class User extends Document {
   })
   @Prop({
     unique: true,
+    lowercase: true,
   })
   email: string;
 
