@@ -1,21 +1,19 @@
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { ValidRoles } from '../interfaces';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-@Entity('users')
-export class User {
+@Schema()
+export class User extends Document {
   @ApiProperty({
     example: '7121ae086525',
     description: 'User ID',
     uniqueItems: true,
   })
-  @PrimaryGeneratedColumn('uuid')
+  @Prop({
+    unique: true,
+    index: true,
+  })
   id: string;
 
   @ApiProperty({
@@ -23,8 +21,7 @@ export class User {
     description: 'User email',
     uniqueItems: true,
   })
-  @Column({
-    type: 'text',
+  @Prop({
     unique: true,
   })
   email: string;
@@ -34,19 +31,14 @@ export class User {
     description: 'User password',
     required: true,
   })
-  @Column({
-    type: 'text',
-    select: false,
-  })
+  @Prop()
   password: string;
 
   @ApiProperty({
     example: 'Test One',
     description: 'User name',
   })
-  @Column({
-    type: 'text',
-  })
+  @Prop()
   fullName: string;
 
   @ApiProperty({
@@ -54,8 +46,7 @@ export class User {
     description: 'User Status',
     default: true,
   })
-  @Column({
-    type: 'bool',
+  @Prop({
     default: true,
   })
   isActive: boolean;
@@ -65,19 +56,10 @@ export class User {
     description: 'User Roles',
     default: ['user'],
   })
-  @Column({
-    type: 'text',
+  @Prop({
     array: true,
     default: ['user'],
   })
   roles: string[];
-
-  @BeforeInsert()
-  checkFieldsBeforeInsert() {
-    this.email = this.email.toLowerCase().trim();
-  }
-  @BeforeUpdate()
-  checkFieldsBeforeUpdate() {
-    this.checkFieldsBeforeInsert();
-  }
 }
+export const UserSchema = SchemaFactory.createForClass(User);
